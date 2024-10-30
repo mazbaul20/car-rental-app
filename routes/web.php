@@ -6,9 +6,9 @@ use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Admin\DashboardController;
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,17 +28,10 @@ Route::middleware(['auth','adminRole:admin'])->prefix('admin')->group(function()
 });
 
 //customer routes
-// Route::middleware(['auth','customerRole:customer'])->group(function() {
-//     Route::get('/dashboard',function(){
-//         return view('dashboard');
-//     })->name('dashboard');
-// });
-
-//customer routes
 Route::middleware(['auth','customerRole:customer'])->prefix('customer')->group(function() {
     Route::get('/dashboard',function(){
         return "This is customer dashboard";
-    });
+    })->name('dashboard');
 
     // Route::get('/rentals', ['Frontend\RentalController','index'])->name('frontend.rentals.index');
     Route::post('/rentals', ['App\Http\Controllers\Frontend\RentalController','store'])->name('customer.rental');

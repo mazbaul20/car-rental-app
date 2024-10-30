@@ -20,7 +20,7 @@
                 </li>
                 <li class="nav-item">
                     @if (Auth::check())
-                        <a class="btn btn-secondary" href="{{ url('/dashboard') }}">Dashboard</a>
+                        <a class="btn btn-secondary" href="{{ route('dashboard') }}">Dashboard</a>
                     @else
                         <a class="btn btn-success" href="{{ url('/login') }}">Login</a>
                         <a class="btn btn-primary" href="{{ url('/register') }}">Signup</a>
