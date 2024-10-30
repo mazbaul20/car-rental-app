@@ -31,6 +31,8 @@
 
                 <form action="{{ route('customer.rental') }}" method="POST" class="row g-2">
                     @csrf
+
+                    <input type="hidden" name="car_id" value="{{ $car->id}}">
                     <div class="col-6">
                         <label for="start_date" class="form-label fw-bold">Start Date:</label>
                         <input type="date" name="start_date" id="start_date" min="{{ date('Y-m-d') }}" required

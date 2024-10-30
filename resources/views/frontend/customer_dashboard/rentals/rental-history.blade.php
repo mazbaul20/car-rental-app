@@ -14,7 +14,6 @@
                     <th>End Date</th>
                     <th>Total Cost</th>
                     <th>Status</th>
-                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,14 +26,6 @@
                     <td>{{ Carbon\Carbon::parse($item->end_date)->format('d M, Y') }}</td>
                     <td>{{ '$'.$item->total_cost }}</td>
                     <td>{{ $item->status }}</td>
-                    <td>
-                        <div class="d-flex gap-3">
-            <form action="{{ route('cancelBooking',$item->id) }}" method="post">
-                @csrf
-                <button type="submit" class="btn btn-danger">Cencel</button>
-            </form>
-                        </div>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>

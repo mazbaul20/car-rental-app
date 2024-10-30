@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Admin</title>
+    <title>Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -43,14 +43,14 @@
 
 
         <!-- Sidebar Start -->
-        @include('admin.layout.sidebar')
+        @include('frontend.customer_dashboard.layout.sidebar')
         <!-- Sidebar End -->
 
 
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
-            @include('admin.layout.top-navbar')
+            @include('frontend.customer_dashboard.layout.top-navbar')
             <!-- Navbar End -->
 
 

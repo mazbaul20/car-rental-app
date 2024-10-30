@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Frontend\CustomerDashboardController;
 
 
 // Route::get('/dashboard', function () {
@@ -30,13 +31,18 @@ Route::middleware(['auth','adminRole:admin'])->prefix('admin')->group(function()
 //customer routes
 Route::middleware(['auth','customerRole:customer'])->prefix('customer')->group(function() {
     Route::get('/dashboard',function(){
-        return "This is customer dashboard";
+        return view('frontend.customer_dashboard.customer_dashboard');
     })->name('dashboard');
+    Route::get('/logout',[CustomerDashboardController::class,'Logout'])->name('customer.logout');
 
-    // Route::get('/rentals', ['Frontend\RentalController','index'])->name('frontend.rentals.index');
+    Route::get('/rentals', ['App\Http\Controllers\Frontend\RentalController','index'])->name('customer.rentals');
+
+    Route::get('/rental-history', [CustomerDashboardController::class,'RentalHistory'])->name('customer.rentals.history');
+
     Route::post('/rentals', ['App\Http\Controllers\Frontend\RentalController','store'])->name('customer.rental');
-    Route::get('/rentals/{id}', ['App\Http\Controllers\Frontend\RentalController','show']);
-    Route::delete('/rentals/{id}', ['App\Http\Controllers\Frontend\RentalController','destroy']);
+    //cenceled booking
+    Route::post('/cancel-booking/{rental}', ['App\Http\Controllers\Frontend\RentalController','CancelBooking'])->name('cancelBooking');
+
 });
 
 //frontend routes
