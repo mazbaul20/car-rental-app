@@ -12,9 +12,6 @@ class PageController extends Controller
     public function home()
     {
         $cars = Car::where('availability', 1)->latest()->get();
-        // $carTypes = Car::pluck('car_type')->unique()->toArray();
-        // $brands = Car::pluck('brand')->unique()->toArray();
-
         return view('frontend.pages.home', compact('cars'));
     }
 
@@ -31,11 +28,26 @@ class PageController extends Controller
     }
 
     // Show the Rentals page
-    public function rentals()
+    public function rentals(Request $request)
     {
-        $cars = Car::where('availability', 1)->get();
+        // dd($request->all());
+        $cars = Car::query()
+        ->where('availability', 1)
+        ->when($request->car_type, function ($query, $carType) {
+            return $query->where('car_type', $carType);
+        })
+        ->when($request->brand, function ($query, $brand) {
+            return $query->where('brand', $brand);
+        })
+        ->when($request->daily_rent, function ($query, $dailyRent) {
+            return $query->where('daily_rent_price', '<=', $dailyRent); // Less than or equal to daily rent
+        })
+        ->latest()
+        ->get();
+
         $carTypes = Car::pluck('car_type')->unique()->toArray();
         $brands = Car::pluck('brand')->unique()->toArray();
+
         return view('frontend.pages.rentals', compact('cars', 'carTypes', 'brands'));
     }
 
