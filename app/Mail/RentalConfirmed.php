@@ -39,6 +39,7 @@ class RentalConfirmed extends Mailable
     {
         return new Content(
             view: 'email.customer_mail',
+            with: $this->data,
         );
     }
 

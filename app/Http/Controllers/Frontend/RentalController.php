@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use Carbon\Carbon;
 use App\Models\Car;
+use App\Models\User;
 use App\Models\Rental;
 use App\Mail\AdminConfirmed;
 use Illuminate\Http\Request;
 use App\Mail\RentalConfirmed;
-use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class RentalController extends Controller
 {
     public function index()
     {
-        $rentals = Rental::where('user_id', Auth::id())->where('status','Pending')->with('car')->paginate(6);
+        $rentals = Rental::where('user_id', Auth::id())->where('status','Pending')->with('car')->latest()->paginate(6);
         // return $rentals;
         return view('frontend.customer_dashboard.rentals.index', compact('rentals'));
     }//end method
@@ -68,27 +69,38 @@ class RentalController extends Controller
 
         //send email to user
         $userName = Auth::user()->name;
+        $userAll = Auth::user();
 
         $userMessage = [
+            'id'=>$userAll->id,
             'name' => $userName,
-            'messageContent' => "You have booked a car for $days days from $startDate to $endDate.",
-            'cost' =>  "$total_price.",
+            'messageContent' => "You have booked a car for $days days from " . Carbon::parse($startDate)->format('d M, Y') . " to " . Carbon::parse($endDate)->format('d M, Y') . ".",
+            'carName' => $car->name,
             'carBrand' => $car->brand,
             'carModel' => $car->model,
+            'carType' => $car->car_type,
+            'cost' =>  $total_price,
         ];
 
         $adminMessage = [
+            'id'=>$userAll->id,
+            'customerName'=>$userAll->name,
+            'customerEmail'=>$userAll->email,
+            'customerPhone'=>$userAll->phone,
             'name' => "Admin",
-            'messageContent' => "$userName has booked a car for $days days from $startDate to $endDate.",
-            'cost' =>  "$total_price.",
+            'messageContent' => "$userName has booked a car for $days days from". Carbon::parse($startDate)->format('d M, Y') . " to " . Carbon::parse($endDate)->format('d M, Y') . ".",
+            'carName' => $car->name,
             'carBrand' => $car->brand,
             'carModel' => $car->model,
+            'carType' => $car->car_type,
+            'cost' =>  $total_price,
         ];
 
-        // Mail::to(Auth::user()->email)->send(new RentalConfirmed($userMessage));
-        // Mail::to('admin@email.com')->send(new AdminConfirmed($adminMessage));
+        Mail::to(Auth::user()->email)->send(new RentalConfirmed($userMessage));
+        Mail::to('mazbaul20@gmail.com')->send(new AdminConfirmed($adminMessage));
+
         Toastr::success('Rental created successfully');
-        return redirect()->route('customer.rentals.history')->with('success', 'Car booked successfully.');
+        return redirect()->route('customer.rentals')->with('success', 'Car booked successfully.');
     }//end method
 
     private function isCarAvailable($carId, $startDate, $endDate, $rentalId = null)

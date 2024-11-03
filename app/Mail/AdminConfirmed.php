@@ -38,7 +38,8 @@ class AdminConfirmed extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'email.admin_mail',
+            with: $this->data,
         );
     }
 
